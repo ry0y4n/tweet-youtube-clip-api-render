@@ -1,7 +1,7 @@
 const fs = require('fs');
 const express = require("express");
 const { EventEmitter } = require('events');
-EventEmitter.defaultMaxListeners = 20;
+EventEmitter.defaultMaxListeners = 0;
 const YTDlpWrap = require('yt-dlp-wrap');
 const { TwitterApi, EUploadMimeType } = require('twitter-api-v2');
 const app = express();
