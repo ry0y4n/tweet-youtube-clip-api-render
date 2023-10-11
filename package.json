@@ -12,6 +12,7 @@
     "dev": "nodemon app.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "twitter-api-v2": "^1.15.1",
     "yt-dlp-wrap": "^2.3.12"
