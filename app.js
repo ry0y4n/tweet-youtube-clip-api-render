@@ -74,7 +74,7 @@ app.get("/post", async (req, res) => {
     accessSecret: req.query.accessSecret
   });
 
-  console.log(`Client: ${client}`);
+  console.dir(`Client: ${client}`, { depth: null });
 
   try {
     const ytDlpWrap = new YTDlpWrap.default('./yt-dlp');
@@ -124,7 +124,7 @@ async function tweetClip(client, data, title, url) {
     mimeType: EUploadMimeType.Mp4,
     longVideo: true
   });
-  console.log(mediaId);
+  console.log(`Media Id: ${mediaId}`);
   console.log('Tweeting');
   await client.v2.tweet({
     text: `${title} ${url} @YouTubeより`,
