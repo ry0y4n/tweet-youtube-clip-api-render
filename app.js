@@ -21,7 +21,7 @@ app.get("/auth", async (req, res) => {
     appSecret: secrets["appSecret"],
   });
 
-  const authLink = await client.generateAuthLink('chrome-extension://ckoccjejljagejofogkcgbmameopconk/auth_callback.html', {
+  const authLink = await client.generateAuthLink('chrome-extension://hneopkclkanekbplnkfkfmkiaghfoneb/auth_callback.html', {
     authAccessType: 'write'
   });
 
