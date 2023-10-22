@@ -21,6 +21,10 @@ app.get("/auth", async (req, res) => {
     appSecret: secrets["appSecret"],
   });
 
+  // for local
+  // const authLink = await client.generateAuthLink('chrome-extension://ckoccjejljagejofogkcgbmameopconk/auth_callback.html', {
+  //   authAccessType: 'write'
+  // });
   const authLink = await client.generateAuthLink('chrome-extension://hneopkclkanekbplnkfkfmkiaghfoneb/auth_callback.html', {
     authAccessType: 'write'
   });
@@ -64,7 +68,10 @@ app.get("/post", async (req, res) => {
   // もしaccessTokenとaccessSecretが無かったら早々にresponseを返す
   if (!req.query.accessToken || !req.query.accessSecret) {
     res.status(400).json({ message: 'Please pass a accessToken, accessSecret on the query string or in the request body' });
+    return;
   }
+
+  const text = req.query.text ? decodeURIComponent(req.query.text) : '';
   const url = req.query.url;
   console.log(`Video URL: ${url}`);
   const client = new TwitterApi({
@@ -98,7 +105,7 @@ app.get("/post", async (req, res) => {
         try {
           console.log('Stream ended, concatenating chunks');
           const data = Buffer.concat(chunks);
-          await tweetClip(client, data, title, url);
+          await tweetClip(client, data, title, url, text);
           res.status(200).json({ message: 'Tweeted successfully' });
           resolve();
         } catch (err) {
@@ -118,7 +125,7 @@ app.get("/post", async (req, res) => {
   }
 });
 
-async function tweetClip(client, data, title, url) {
+async function tweetClip(client, data, title, url, text) {
   console.log('Uploading media');
   const mediaId = await client.v1.uploadMedia(data, {
     mimeType: EUploadMimeType.Mp4,
@@ -126,8 +133,14 @@ async function tweetClip(client, data, title, url) {
   });
   console.log(`Media Id: ${mediaId}`);
   console.log('Tweeting');
+
+  const tweetText = text
+    ? `${text}\n\n${title} ${url} @YouTubeより`
+    : `${title} ${url} @YouTubeより`;
+  console.log(`Tweet Text: ${tweetText}`);
+
   await client.v2.tweet({
-    text: `${title} ${url} @YouTubeより`,
+    text: tweetText,
     media: { media_ids: [mediaId] }
   });
   console.log('Tweeted');
